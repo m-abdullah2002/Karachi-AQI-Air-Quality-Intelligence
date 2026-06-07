@@ -1,0 +1,49 @@
+name: Daily Model Training & 3-Day Forecast Pipeline
+
+on:
+  schedule:
+    
+    - cron: '0 0 * * *'
+  workflow_dispatch: 
+
+jobs:
+  retrain_and_forecast:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python Runtime
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install Deep Learning & MLOps Stack
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas numpy scikit-learn xgboost lightgbm torch joblib hopsworks shap matplotlib
+
+    - name: Run Leaderboard Training & Fetch Feature Space
+      env:
+        HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+      run: |
+        python scripts/train_model.py
+
+    - name: Generate 3-Day Forecast Prediction Matrix
+      env:
+        HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+      run: |
+        python scripts/insert_features.py # Ya jo aapki prediction generate karne wali main script ho
+
+    - name: Update Dynamic SHAP Bar Chart Artifacts
+      run: |
+        python scripts/explain_model.py
+
+    - name: Auto Commit Latest SHAP Plots back to GitHub
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions@github.com"
+        git add models/shap_summary.png
+        git diff-index --quiet HEAD || (git commit -m "Automated Daily SHAP Matrix Re-align [skip ci]" && git push)
