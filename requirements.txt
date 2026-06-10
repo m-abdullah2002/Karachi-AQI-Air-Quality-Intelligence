@@ -1,0 +1,11 @@
+pandas
+numpy
+requests
+hopsworks
+scikit-learn
+xgboost
+lightgbm
+torch
+joblib
+shap
+matplotlib
