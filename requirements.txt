@@ -1,7 +1,8 @@
 pandas
 numpy
 requests
-hopsworks
+hopsworks==4.7.*
+pyarrow
 scikit-learn
 xgboost
 lightgbm
