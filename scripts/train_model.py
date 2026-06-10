@@ -173,6 +173,13 @@ print("Promoting champion model to Hopsworks Registry...")
 artifact_dir = "models"
 os.makedirs(artifact_dir, exist_ok=True)
 
+# --- FIX: Validation features ko save karna ---
+# Yahan hum X_test_raw ko DataFrame mein convert karke save kar rahe hain 
+# taake explain_model.py ise read kar sake.
+pd.DataFrame(X_test_raw).to_csv(os.path.join(artifact_dir, "validation_features.csv"), index=False)
+print("Validation features saved successfully to models/validation_features.csv")
+# ----------------------------------------------
+
 # 1. Champion Model Select and Save Locally
 best_model = model_leaderboard[best_model_name]['model']
 best_metrics = model_leaderboard[best_model_name]
