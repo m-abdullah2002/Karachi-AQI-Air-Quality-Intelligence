@@ -42,5 +42,6 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
+        git pull origin main --rebase
         git add models/shap_summary.png
         git diff-index --quiet HEAD || (git commit -m "Automated Daily Update [skip ci]" && git push)
