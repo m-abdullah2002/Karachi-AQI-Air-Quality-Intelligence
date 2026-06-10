@@ -42,6 +42,17 @@ jobs:
       run: |
         git config --global user.name "GitHub Actions Bot"
         git config --global user.email "actions@github.com"
-        git pull origin main --rebase
         git add models/shap_summary.png
-        git diff-index --quiet HEAD || (git commit -m "Automated Daily Update [skip ci]" && git push)
+        
+        # 2. Check karein agar koi change hai, toh commit karein
+        if ! git diff-index --quiet HEAD; then
+          git commit -m "Automated Daily Update [skip ci]"
+          
+          # 3. Push karne se pehle remote changes pull karein (with rebase)
+          git pull origin main --rebase
+          
+          # 4. Final Push
+          git push origin main
+        else
+          print "No changes detected in SHAP plots."
+        fi
