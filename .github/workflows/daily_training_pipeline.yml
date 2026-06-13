@@ -45,11 +45,8 @@ jobs:
         git add models/shap_summary.png
         
         if ! git diff-index --quiet HEAD; then
-          git commit -m "Automated Daily Update [skip ci]"
-          
-          git pull origin main --rebase
-          
+          git commit -m "Automated Daily Update [skip ci]"          
           git push origin main
         else
-          print "No changes detected in SHAP plots."
+          echo "No changes detected in SHAP plots."
         fi
